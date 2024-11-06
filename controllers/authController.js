@@ -5,17 +5,20 @@ const jwt = require('jsonwebtoken');
 
 // Register
 exports.register = async (req, res) => {
-    const { email, password } = req.body;
+    console.log("Hello")
+    const { email, password, username } = req.body; // Uncomment and get the username
 
     try {
+        console.log("Entered", req.body);
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ email, password: hashedPassword });
+        const user = new User({ email, password: hashedPassword, username });
         await user.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Login
 exports.login = async (req, res) => {
@@ -31,25 +34,15 @@ exports.login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+        console.log("Username", user.username)
 
         // Generate JWT
         const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, name: user.email, userid: user._id });
+        res.json({ token, name: user.username });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-exports.register = async (req, res) => {
-    const { email, password } = req.body;
 
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ email, password: hashedPassword });
-        await user.save();
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
