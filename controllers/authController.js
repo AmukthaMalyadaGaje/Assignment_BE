@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 // Register
 exports.register = async (req, res) => {
     console.log("Hello")
-    const { email, password, username } = req.body; // Uncomment and get the username
+    const { email, password, username } = req.body;
 
     try {
         console.log("Entered", req.body);
